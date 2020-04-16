@@ -1,0 +1,91 @@
+---
+title: "STAT 345 Lab Eight"
+author: "INSERT NAME HERE"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Bug Hunting
+
+In this lab, you will fix a couple of buggy function definitions. Probably the easiest workflow is to define the function in your console, and then run the sample commands---they will either give errors or produce the wrong outputs. Using any combination of: reading the error messages, `traceback()`, and `cat()` or `print()`, you must find and fix the bugs. Sometimes it can also help to try multiple different inputs, i.e., try new function calls, rather than just looking at the sample calls given to you, in order to determine the bugs. You shouldn't show any of your debugging work in your final knitted answers---so, don't show calls to `traceback()`, and don't leave any `cat()` or `print()` calls in the final, fixed function. (You don't have to do anything yet, this was just to setup this section of the lab.)
+
+Submit your knitted file to Canvas. There's no "quiz" for this lab!
+
+1. Below is a function called `get.cols.with.ab.zeros()`, but it has a few bugs. A few sample matrices are given below in `mat`, `identity.mat`, along with some sample calls that give errors. After fixing the bugs, the calls to `get.cols.with.ab.zeros()` should produce the outputs as described in comments.
+
+```{r, error=TRUE}
+# Function: cols.with.ab.zeros, to retrieve columns of matrix that have between
+#   a and b zeros, each
+# Inputs:
+# - my.mat: the original matrix 
+# - a: lower bound for number of zeros allowed; default is 0
+# - b: upper bound for number of zeros allowed; default is Inf
+# Output: the new matrix
+
+cols.with.ab.zeros = function(my.mat, a=0, b=Inf) {
+  if(!is.matrix(my.mat)){
+    warning("object is not a matrix")
+  }
+  colnum <- ncol(my.mat)
+  for( i in 1:colnum){
+    
+    if(all.equal(my.mat[i,], 0)){
+      return(my.mat[i,])
+    }
+  }
+  if( a <= zeros.per.column && zeros.per.column <= b){
+    return(my.mat[i.to.keep,])
+  }
+}
+mat <- matrix(c(0,0,1,0,1,1,1,1,1), 3, 3)
+print(mat)
+identity.mat = diag(1, 3)
+print(mat)
+cols.with.ab.zeros(mat) # Should get back original matrix
+#sapply(mat, cols.with.ab.zeros)
+
+cols.with.ab.zeros(mat, a=1, b=2) # Should get back first 2 columns of mat
+cols.with.ab.zeros(mat, a=2, b=2) # Should get just 1st column of mat; note
+# this should still be a matrix though, and not a numeric vector!
+cols.with.ab.zeros(identity.mat, a=2, b=2) # Should get back original matrix
+```
+
+2. Below is a function called `list.extractor()`, but it has a few bugs. A sample list is given below in `cool.list`, along with some sample calls that give errors. After fixing the bugs, the calls to `list.extractor()` should produce the outputs as described in comments. (As a partial hint, check out the yellow, triangle warning signs that RStudio adds to the line numbers!)
+
+```{r, error=TRUE}
+# Function: list.extractor, to extract elements of a list
+# Inputs:
+# - my.list: the original list 
+# - i.to.keep: vector of indices, corresponding to elements of the list we
+#   want to keep. Default is NULL, in which case this argument is ignored
+# - i.to.remove: vector of indices, corresponding to elements of the list we
+#   want to remove Default is NULL, in which case this argument is ignored.
+#   NOTE: if both i.to.keep and i.to.remove are non-NULL, then the first 
+#   one should take precedence (i.e., we don't remove anything)
+# Output: the new list
+
+list.extractor = function(my.list, i.to.keep=NULL, i.to.remove=NULL) {
+  if (!is.null(i.to.keep)) {
+    L = my.list[i.to.keep]  }
+  if (!is.null(i.to.remove)) {
+    L = my.list[-i.to.remove]
+  }
+  return(L)
+}
+
+cool.list = list(ints=1:10, lets=letters[1:8], fracs=1:7/7,
+                 bools=sample(c(TRUE,FALSE), 5, replace=TRUE))
+list.extractor(cool.list, i.to.keep=c(1,3)) # Should get list with ints, fracs
+list.extractor(cool.list, i.to.remove=4) # Should get list without bools
+list.extractor(cool.list, i.to.keep=2:4, i.to.remove=4) # Should get list with
+# lets, fracs, and bools (the i.to.remove argument should be ignored)
+
+#Cannot figure out why it is not printing out the booleans for the last command.
+```
